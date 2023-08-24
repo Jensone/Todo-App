@@ -32,11 +32,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/tasks', (req, res) => {
-    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks;
-    res.render('tasks', { 
-        tasks : tasks
-    })
-    // console.log(tasks)
+    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks
+    let message = ''
+    res.render('tasks', { tasks, message })
 })
 
 app.post('/tasks/create', (req, res) => {
@@ -49,8 +47,19 @@ app.post('/tasks/create', (req, res) => {
     };
     tasks.push(newTask);
     fs.writeFileSync('db.json', JSON.stringify({ tasks }));
+    // let message = 'La tâche a bien été ajoutée';
     res.redirect('/tasks');
 });
+
+app.get('/tasks/delete/:id', (req, res) => {
+    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks; 
+    const newTasks = tasks.filter(task => task.id !== parseInt(req.params.id)); 
+    fs.writeFileSync('db.json', JSON.stringify({ tasks: newTasks }));
+    // let message = 'La tâche a bien été supprimée';
+    res.redirect('/tasks');
+});
+
+
 
 
 
